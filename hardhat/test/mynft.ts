@@ -6,12 +6,14 @@ describe("MyNFT", function () {
     let myNFTContract: any;
     let owner: any;
     let user0: any;
+    let thirdAccount: any;
 
     beforeEach(async () => {
         await deployments.fixture(["MyNFT"]);
-        const {deployer,user} = await getNamedAccounts();
+        const {deployer,user,user2} = await getNamedAccounts();
         owner = deployer;
         user0 = user;
+        thirdAccount = user2;
         const deployment = await deployments.get("MyNFT");
         myNFTContract = await ethers.getContractAt("MyNFT",deployment.address);
     });
@@ -90,8 +92,26 @@ describe("MyNFT", function () {
         // owner的tokenUrl
         const uri = await myNFTContract.tokenURI(1)
         await expect(uri).to.equal(tokenURI2)
+    })
+
+    // approve
+    it("should get the correct approve", async ()=> {
+      const tokenURI = "ipfs://QmS4ghgMgfFvqPjB4WKXHaN15ZyT4K4JYZxY5";
+      const tx1 = await myNFTContract.mintAvatar(owner,tokenURI);
+      await tx1.wait();
+
+      await myNFTContract.approve(user0,0);
+      const approved = await myNFTContract.getApproved(0);
+      await expect(approved).to.equal(user0)
 
 
+      // test user 转移nft
+      const ethersUser0 = await ethers.getSigner(user0);
+      const tx3 = await myNFTContract.connect(ethersUser0).safeTransferFrom(owner,thirdAccount,0);
+      await tx3.wait();
+      
+      const nowOwner = await myNFTContract.ownerOf(0);
+      await expect(nowOwner).to.equal(thirdAccount)
     })
 
 
