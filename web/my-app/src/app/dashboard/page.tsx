@@ -6,7 +6,7 @@ import  connectProvider  from "../../ethers/connectContract";
 import {UploadIPFS} from "../../components/UploadIPFS"
 import {useEffect,useState} from 'react'
 import { Contract } from "ethers";
-
+import MyNftCollections from '../../components/MyNftCollections'
 export default function Dashboard() {
   const { balance, isConnected, account} = useWallet();
   const [contract, setContract] = useState<Contract | null>(null);
@@ -20,16 +20,6 @@ export default function Dashboard() {
     fetchContract();
   },[])
 
-
-  const mintNft = async () => {  
-    try{
-      const tx = await contract?.mintAvatar(account, "https://example.com/nft-image.png");
-      console.log('tx',tx)
-    } catch(e){
-      console.error(e)
-    }
-
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
@@ -105,7 +95,10 @@ export default function Dashboard() {
           </div>
         </div>
 
-<UploadIPFS></UploadIPFS>
+<section className="mt-8 flex  gap-4">
+  <UploadIPFS></UploadIPFS>
+  <MyNftCollections></MyNftCollections>
+</section>
         {/* NFT Collection Section */}
         <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
@@ -135,13 +128,17 @@ export default function Dashboard() {
                 Get started by minting your first NFT avatar.
               </p>
               <div className="mt-6">
-                <button onClick={mintNft} className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <button className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   Mint NFT1
                 </button>
               </div>
             </div>
           )}
         </div>
+
+
+
+
 
 
         {/* Quick Actions */}
