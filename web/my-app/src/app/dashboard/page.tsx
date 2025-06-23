@@ -10,14 +10,18 @@ import MyNftCollections from '../../components/MyNftCollections'
 export default function Dashboard() {
   const { balance, isConnected, account} = useWallet();
   const [contract, setContract] = useState<Contract | null>(null);
-
+  const [reloadFlag, setReloadFlag] = useState(0);
+  const handleUploadSuccess = () => {
+    setReloadFlag(reloadFlag + 1);
+  }
   useEffect(() => {
     const fetchContract = async () => {
       const _contract = await connectProvider();
       setContract(_contract);
     }
 
-    fetchContract();
+    // fetchContract();
+
   },[])
 
 
@@ -96,8 +100,8 @@ export default function Dashboard() {
         </div>
 
 <section className="mt-8 flex  gap-4">
-  <UploadIPFS></UploadIPFS>
-  <MyNftCollections></MyNftCollections>
+  <UploadIPFS onSuccess={handleUploadSuccess}></UploadIPFS>
+  <MyNftCollections reloadFlag={reloadFlag}></MyNftCollections>
 </section>
         {/* NFT Collection Section */}
         <div className="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">

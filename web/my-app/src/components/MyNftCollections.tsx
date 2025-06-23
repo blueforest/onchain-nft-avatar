@@ -6,7 +6,7 @@ import fetchNFTMetadata from "../utils/fetchMetaData";
 import {useEffect,useState} from 'react'
 import { Contract } from "ethers";
 
-export default function Dashboard() {
+export default function MyNftCollections({reloadFlag}:{reloadFlag:number}) {
   const { account} = useWallet();
   const [contract, setContract] = useState<Contract | null>(null);
   const [nftList, setNftList] = useState<any[]>([]);
@@ -19,12 +19,14 @@ export default function Dashboard() {
     fetchContract();
   },[])
 
-
     const queryNft = async () => {  
      try{
       console.log('account11',account)
       const res = await contract?.tokensOfOwner(account);
+      console.log('res',res)
       const nfts = await Promise.all(res[1].map(async (uri: string) => {
+        // 间隔1s,否则会返回429
+        await new Promise(resolve => setTimeout(resolve, 1000));
         const metadata = await fetchNFTMetadata(uri);
         return {
           ...metadata,
@@ -44,7 +46,7 @@ export default function Dashboard() {
     if (account && contract) {
       queryNft();
     }
-  }, [account, contract]);
+  }, [account, contract,reloadFlag]);
 
 
 

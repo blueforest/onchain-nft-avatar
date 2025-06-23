@@ -5,7 +5,7 @@ import { pinata } from "@/utils/config";
 import { useWallet } from "../hooks/useWallet";
 import connectProvider from "../ethers/connectContract";
 
-export  function UploadIPFS() {
+export  function UploadIPFS( {onSuccess}:{onSuccess:()=>void}) {
   const {  account  } = useWallet();
   const [file, setFile] = useState<File>();
   const [uploading, setUploading] = useState(false);
@@ -77,7 +77,6 @@ export  function UploadIPFS() {
 
   // minting the nft
   const handleMint = async () => {
-    console.log(account)
     try {
       setUploading(true);
       const uploadRes = await uploadFile()
@@ -93,6 +92,7 @@ export  function UploadIPFS() {
       const tokenURI = `ipfs://${uploadJsonRes.cid}`
       await _contract.mintAvatar(account,tokenURI)
       setUploading(false);
+      onSuccess()
     } catch (e) {
       console.error(e)
       setUploading(false);
