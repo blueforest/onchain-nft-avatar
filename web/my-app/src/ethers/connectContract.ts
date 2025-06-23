@@ -1,8 +1,8 @@
 import { ethers,Contract,Signer } from "ethers";
-import contractData from "../../../../hardhat/deployments/localhost/MyNFT.json";
+import contractData from "../abi/MyNFT.json";
 
-const contractAddress = process.env.CONTRACT_ADDRESS;
-const rpcUrl = process.env.RPC_URL;
+const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+const rpcUrl = process.env.NEXT_PUBLIC_RPC_URL;
 
 async function connectProvider() {
   try {
@@ -14,8 +14,10 @@ async function connectProvider() {
     }
 
     const provider = new ethers.JsonRpcProvider(rpcUrl);
-    const signer:Signer = await provider.getSigner(2);
+    const signer:Signer = await provider.getSigner();
     const contract:Contract = new Contract(contractAddress, contractData.abi, signer);
+    
+    console.log('contract',contract)
     return  Promise.resolve(contract);
   } catch (error) {
     console.error('Failed to connect to the contract:', error);
