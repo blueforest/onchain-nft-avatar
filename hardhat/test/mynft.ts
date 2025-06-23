@@ -113,9 +113,5 @@ describe("MyNFT", function () {
       const nowOwner = await myNFTContract.ownerOf(0);
       await expect(nowOwner).to.equal(thirdAccount)
     })
-
-
-
-
-    
+ 
 })
